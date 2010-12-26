@@ -5,8 +5,8 @@ get('/', function() {
 	return 'Hello World!';
 });
 
-get('/bye', function() {
-	return 'Goodbye World!';
+get('/hello/(.*?)', function($sammy) {
+	return 'Hello '.$sammy->segment(2);
 });
 
 $sammy->run();

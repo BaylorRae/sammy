@@ -57,7 +57,7 @@ class Sammy {
 	public static function process($route, $callback, $type)
 	{
 		$sammy = static::instance();
-		if ($route != $sammy->uri || $sammy->method != $type)
+		if (static::$route_found || ( ! preg_match('@^'.$route.'$@uD', $sammy->uri) || $sammy->method != $type))
 		{
 			return false;
 		}
@@ -77,6 +77,11 @@ class Sammy {
 		$this->uri = $this->get_uri();
 		$this->segments = explode('/', trim($this->uri, '/'));
 		$this->method = $this->get_method();
+	}
+
+	public function segment($num)
+	{
+		return isset($this->segments[$num - 1]) ? $this->segments[$num - 1] : null;
 	}
 
 	protected function get_method()
