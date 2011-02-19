@@ -68,8 +68,13 @@ class Sammy {
 		if( static::$route_found || (!preg_match('@^'.$route.'(?:\.(\w+))?$@uD', $sammy->uri, $matches) || $sammy->method != $type) ) {
 			return false;
 		}
-				
-		$sammy->format = (!empty($matches[1])) ? $matches[1] : null;
+    
+    // Get the extension
+    $extension = $matches[count($matches)-1];
+    $extension_test = substr($sammy->uri, -(strlen($extension)+1), (strlen($extension)+1));
+    
+    if( $extension_test == '.' . $extension )
+      $sammy->format = $extension;
 		
 		static::$route_found = true;
 		echo $callback($sammy);
@@ -83,7 +88,12 @@ class Sammy {
 	}
 
 	public function segment($num) {
-		return isset($this->segments[$num - 1]) ? $this->segments[$num - 1] : null;
+	  $num--;
+	  
+    // Remove the extension
+    $this->segments[$num] = isset($this->segments[$num]) ? rtrim($this->segments[$num], '.' . $this->format) : null;
+	  
+		return isset($this->segments[$num]) ? $this->segments[$num] : null;
 	}
 
 	protected function get_method() {

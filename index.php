@@ -17,7 +17,7 @@ get('/', function() {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
     <script>
 
-      $('#results').load('ajax');
+      $('#results').load('/ajax');
 
     </script>
 
@@ -47,7 +47,13 @@ get('/users', function($sammy) {
 });
 
 get('/hello/(.*?)', function($sammy) {
-	return 'Hello '.$sammy->segment(2);
+  
+  $sammy->format('json', function($sammy) {
+    return json_encode(array('name', $sammy->segment(2)));
+  });
+  
+  if( !$sammy->format )
+  	return 'Hello '.$sammy->segment(2);
 });
 
 ajax('/ajax', function() {
