@@ -24,6 +24,10 @@ function delete($route, $callback) {
 	Sammy::process($route, $callback, 'DELETE');
 }
 
+function ajax($route, $callback) {
+	Sammy::process($route, $callback, 'XMLHttpRequest');
+}
+
 class Sammy {
 	
 	public static $route_found = false;
@@ -56,10 +60,15 @@ class Sammy {
 
 	public static function process($route, $callback, $type) {
 		$sammy = static::instance();
+		
+    // Check for ajax
+		if( $type == 'XMLHttpRequest' )
+		  $sammy->method = isset($_SERVER['HTTP_X_REQUESTED_WITH']) ? $_SERVER['HTTP_X_REQUESTED_WITH'] : 'GET';
+		
 		if( static::$route_found || (!preg_match('@^'.$route.'(?:\.(\w+))?$@uD', $sammy->uri, $matches) || $sammy->method != $type) ) {
 			return false;
 		}
-		
+				
 		$sammy->format = (!empty($matches[1])) ? $matches[1] : null;
 		
 		static::$route_found = true;

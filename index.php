@@ -2,7 +2,28 @@
 include 'sammy.php';
 
 get('/', function() {
-	return 'Hello World!';
+?>
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+  <title>HTML5 Document</title>
+  <meta charset="utf-8" />
+
+  </head>
+  <body>
+
+    <div id="results"></div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+    <script>
+
+      $('#results').load('ajax');
+
+    </script>
+
+  </body>
+  </html>
+<?php
 });
 
 get('/users', function($sammy) {
@@ -27,6 +48,10 @@ get('/users', function($sammy) {
 
 get('/hello/(.*?)', function($sammy) {
 	return 'Hello '.$sammy->segment(2);
+});
+
+ajax('/ajax', function() {
+  return 'ha, you found me!';
 });
 
 $sammy->run();
